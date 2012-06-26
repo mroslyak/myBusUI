@@ -21,7 +21,7 @@
 	    android:layout_height="wrap_content"
 	    android:layout_margin="1dp"
 	    android:layout_toRightOf="@id/rowImage"
-	    android:text="From:"
+	    android:text="@string/from"
 	    android:textStyle="bold" 
 	    android:textColor="#000000"/>		
 	<TextView
@@ -30,7 +30,7 @@
 	    android:layout_height="wrap_content"
 	    android:layout_margin="1dp"
 	    android:layout_toRightOf="@id/fromConstant"
-	    android:text="Name"
+	    android:text=""
 	    android:textColor="#000000"/>
     
   	<TextView
@@ -41,7 +41,7 @@
   	    android:layout_margin="1dp"
   	    android:layout_toRightOf="@id/rowImage"
   	    android:textStyle="bold" 
-  	    android:text="To:" android:textColor="#000000"/>
+  	    android:text="@string/to" android:textColor="#000000"/>
   	<TextView
   	    android:id="@+id/toStopId"
   	    android:layout_width="wrap_content"
@@ -49,7 +49,7 @@
   	    android:layout_below="@id/fromStopId"
   	    android:layout_margin="1dp"
   	    android:layout_toRightOf="@id/toConstant"
-  	    android:text="Comment" android:textColor="#000000"/>
+  	    android:text="" android:textColor="#000000"/>
     
     <TextView
         android:id="@+id/timeEstimate"
@@ -58,7 +58,7 @@
         android:layout_alignParentRight="true"
         android:layout_margin="5dp"
         android:clickable="true"
-        android:text="Clickable Link"
+        android:text=""
         android:textStyle="bold" 
         android:layout_toRightOf="@id/toStopId"
         android:textSize="16sp"
