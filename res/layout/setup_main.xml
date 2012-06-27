@@ -1,22 +1,53 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
     android:orientation="vertical" >
+    
+    <TextView
+        android:id="@+id/headerText"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Please select your Bus Routes and click Add" />
+    
+    <TextView 
+        android:text="Route:"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        />
+    <Spinner
+        android:id="@+id/route"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content" />
+    
+    
+    <TextView 
+        android:text="From Stop:"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        />
+    <Spinner
+        android:id="@+id/fromBusStop"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content" />
 
     <TextView 
+        android:text="To Stop:"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        />
+    <Spinner
+        android:id="@+id/toBusStop"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        
-        android:text="Please select your Bus Routes and click Add"/>
+        android:layout_height="wrap_content" />
     
-    
-    
-    
-    <Button 
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        
-        android:text="Add"
-        android:onClick="addRoute"/>
-    </LinearLayout>
+    <Button
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentLeft="true"
+        android:layout_marginLeft="26dp"
+        android:layout_marginTop="84dp"
+        android:onClick="addRoute"
+        android:text="Add" />
+
+</LinearLayout>
