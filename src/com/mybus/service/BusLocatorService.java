@@ -15,30 +15,57 @@ import org.apache.http.client.HttpClient;
 import org.apache.http.client.methods.HttpGet;
 import org.apache.http.impl.client.DefaultHttpClient;
 import org.json.JSONArray;
+import org.json.JSONObject;
 
 import android.util.Log;
 
 import com.mybus.model.Route;
+import com.mybus.model.Stop;
 
 public class BusLocatorService {
 	private String serverName = "http://23.21.134.13:9000";
+	
+	/**
+	 * Gets List of available routes for mbta right now.
+	 * @return
+	 */
 	public List<Route> getRoutes(){
 		String routesJson = getJsonString(serverName+"/busInfo/getRoutes/mbta");
 		List<Route> routes = new ArrayList<Route>();
 		try{
-			JSONArray jsonArray = new JSONArray(routesJson);
-			jsonArray.getJSONObject(1);
-			
+			JSONObject json = new JSONObject(routesJson);
+			JSONArray array = json.getJSONArray("routes");
+			for (int i=0; i< array.length();i++){
+				json = array.getJSONObject(i);
+				routes.add(new Route(json.getString("tag"), json.getString("title")));
+			}
 		}catch(Exception e){
 			Log.e(BusLocatorService.class.toString(),e.getLocalizedMessage());
+			
 		}
-		routes.add(new Route("route1", "Route 1"));
 		return routes;
 	}
 	
+	/**
+	 * For a particular route get a list of stops
+	 * @param routeTag
+	 * @return
+	 */
+	public List<Stop> getStops(String routeTag){
+		List<Stop> stops = new ArrayList<Stop>();
+		
+		stops.add(new Stop("1","test Stop"));
+		stops.add(new Stop("2","test Stop2"));
+		
+		return stops; 
+	}
 	
-	
-	public String getJsonString(String url) {
+	/**
+	 * connects to REST WS and returns body as String
+	 * @param url
+	 * @return
+	 */
+	private String getJsonString(String url) {
 		StringBuilder builder = new StringBuilder();
 		HttpClient client = new DefaultHttpClient();
 		HttpGet httpGet = new HttpGet(url);
