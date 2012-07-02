@@ -4,7 +4,9 @@ import java.util.ArrayList;
 import java.util.List;
 
 import com.mybus.adapter.RouteListRowAdapter;
+import com.mybus.model.BusTrip;
 import com.mybus.model.RouteEstimate;
+import com.mybus.service.SavedRoutesService;
 
 import android.app.Activity;
 import android.content.Intent;
@@ -19,25 +21,11 @@ public class RoutesListActivity extends Activity {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        List<RouteEstimate> userRoutes = new ArrayList<RouteEstimate>();
-
-        //Load user saved routes from Shared Preferences.  format is fromStopId:fromStopName,toStopId:toStopName
-        SharedPreferences preferences = getApplicationContext().getSharedPreferences(SetupRouteActivity.APP_NAME, MODE_PRIVATE);
-        int i=0;
-        while (true){
-        	if (preferences.contains("route_"+i))
-        		userRoutes.add(new RouteEstimate(preferences.getString("route_"+i, null)));
-        	else
-        		break;
-        	i++;      	
-        	
-        }
-
+        
+        SavedRoutesService savedRoutesService = new SavedRoutesService(this);
+        List<BusTrip> userRoutes = savedRoutesService.getRoutes();
+       
       	setContentView(R.layout.routes_main);
-        
-       // userRoutes.add(new RouteEstimate());
-      //  userRoutes.add(new RouteEstimate());
-        
         
         ListView listView = (ListView) findViewById(R.id.list);
         //TextView setupButton = (TextView) findViewById(R.id.emptyLayout);
@@ -48,9 +36,23 @@ public class RoutesListActivity extends Activity {
         
     }
     
+    @Override
+    public void onResume(){
+    	super.onResume();
+    	  SavedRoutesService savedRoutesService = new SavedRoutesService(this);
+          List<BusTrip> userRoutes = savedRoutesService.getRoutes();
+         
+        	setContentView(R.layout.routes_main);
+          
+          ListView listView = (ListView) findViewById(R.id.list);
+          //TextView setupButton = (TextView) findViewById(R.id.emptyLayout);
+          RouteListRowAdapter routeAdapter = new RouteListRowAdapter(this, R.id.txtLoadingList,userRoutes );
+          
+          listView.setAdapter(routeAdapter);
+    }
     
     public void showSetupActivity(View view){
     	startActivity(new Intent(getApplicationContext(),SetupRouteActivity.class));
-    
+    	
     }
 }

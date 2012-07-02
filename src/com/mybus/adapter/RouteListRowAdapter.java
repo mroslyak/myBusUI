@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import com.mybus.activity.R;
+import com.mybus.model.BusTrip;
 import com.mybus.model.RouteEstimate;
 
 import android.content.Context;
@@ -15,18 +16,18 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 
-public class RouteListRowAdapter extends ArrayAdapter<RouteEstimate> {
+public class RouteListRowAdapter extends ArrayAdapter<BusTrip> {
 
 	private Context context = null;
-	private ArrayList<RouteEstimate> routeList = null;
+	private ArrayList<BusTrip> routeList = null;
 	private LayoutInflater inflater = null;
 
 	public RouteListRowAdapter(Context context, int textViewResourceId,
-			List<RouteEstimate> objects) {
+			List<BusTrip> objects) {
 		super(context, textViewResourceId, objects);
 		
 		this.context = context;
-		this.routeList = (ArrayList<RouteEstimate>)objects;
+		this.routeList = (ArrayList<BusTrip>)objects;
 		this.inflater = LayoutInflater.from(this.context);
 	}
 	
@@ -44,10 +45,11 @@ public class RouteListRowAdapter extends ArrayAdapter<RouteEstimate> {
            // ImageView image = (ImageView) view.findViewById(R.id.rowImage);
            // image.setImageResource(R.drawable.ic_launcher);
             
+		    BusTrip trip = routeList.get(position);
             TextView textView = (TextView) view.findViewById(R.id.fromStopId);
-            textView.setText( "from" );
+            textView.setText( trip.getFromStop().getName() );
             textView = (TextView) view.findViewById(R.id.toStopId);
-            textView.setText("some place nice");
+            textView.setText(trip.getToStop().getName());
             
             textView = (TextView) view.findViewById(R.id.timeEstimate);
             textView.setText("5 minutes");

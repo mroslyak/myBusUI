@@ -6,9 +6,11 @@ import java.util.List;
 import org.apache.http.client.methods.HttpGet;
 import org.apache.http.impl.client.DefaultHttpClient;
 
+import com.mybus.model.BusTrip;
 import com.mybus.model.Route;
 import com.mybus.model.Stop;
 import com.mybus.service.BusLocatorService;
+import com.mybus.service.SavedRoutesService;
 
 import android.app.Activity;
 import android.content.SharedPreferences;
@@ -39,6 +41,22 @@ public class SetupRouteActivity extends Activity {
 		spinner.setOnItemSelectedListener(listener);
 	}
 
+	public void addRoute(View view){
+		Spinner routeSpinner = (Spinner) findViewById(R.id.route);
+		Spinner fromStopSpinner = (Spinner) findViewById(R.id.fromBusStop);
+		Spinner toStopSpinner = (Spinner) findViewById(R.id.toBusStop);
+		
+		BusTrip newBusRoute = new BusTrip();
+		newBusRoute.setRoute((Route)routeSpinner.getSelectedItem());
+		newBusRoute.setFromStop((Stop) fromStopSpinner.getSelectedItem());
+		newBusRoute.setToStop((Stop) toStopSpinner.getSelectedItem());
+		
+		SavedRoutesService service = new SavedRoutesService(this);
+		service.saveRoute(newBusRoute);
+		
+		this.finish();
+		
+	}
 	
 	private class RouteSelectedListener implements
 			AdapterView.OnItemSelectedListener {
