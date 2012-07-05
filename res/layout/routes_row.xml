@@ -4,6 +4,7 @@
     android:layout_width="fill_parent"
     android:layout_height="wrap_content"
     android:background="#f1f1f1"
+    android:gravity="left"
     android:orientation="vertical"
     android:padding="8dp" >
     
@@ -50,19 +51,20 @@
   	    android:layout_margin="1dp"
   	    android:layout_toRightOf="@id/toConstant"
   	    android:text="" android:textColor="#000000"/>
-    
+
     <TextView
         android:id="@+id/timeEstimate"
-        android:layout_width="wrap_content"
-        android:layout_height="match_parent"
-        android:layout_alignParentRight="true"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_centerVertical="true"
         android:layout_margin="5dp"
+        android:layout_marginLeft="87dp"
+        android:layout_toRightOf="@+id/fromStopId"
+        android:layout_alignParentRight="true"
         android:clickable="true"
-        android:text=""
-        android:textStyle="bold" 
-        android:layout_toRightOf="@id/toStopId"
+        android:gravity="center_vertical"
+        android:text="some time"
         android:textSize="16sp"
-        
-        android:gravity="center_vertical"/>
+        android:textStyle="bold" />
 		
 </RelativeLayout>

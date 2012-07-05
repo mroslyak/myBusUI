@@ -13,6 +13,7 @@ import com.mybus.service.BusLocatorService;
 import com.mybus.service.SavedRoutesService;
 
 import android.app.Activity;
+import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.AsyncTask;
 import android.os.Bundle;
@@ -53,8 +54,9 @@ public class SetupRouteActivity extends Activity {
 		
 		SavedRoutesService service = new SavedRoutesService(this);
 		service.saveRoute(newBusRoute);
-		
-		this.finish();
+		Intent in = new Intent();
+        setResult(1,in);
+        finish();
 		
 	}
 	

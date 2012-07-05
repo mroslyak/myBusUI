@@ -1,8 +1,11 @@
 package com.mybus.model;
 
+import java.util.List;
+
 public class BusTrip {
 	Route route;
 	Stop fromStop, toStop;
+	List<String> estimatedArrivalTimeList;
 	private static final String separator =":";
 	public BusTrip(String savedTrip){
 		String[] segments = savedTrip.split(separator);
@@ -37,6 +40,20 @@ public class BusTrip {
 		this.toStop = toStop;
 	}
 	
+	public String getEstimatedArrival(){
+		if (estimatedArrivalTimeList == null)
+			return "N/A";
+		else{
+			String rtn ="";
+			for (String str: estimatedArrivalTimeList){
+				rtn +=str +" ";
+			}
+			return rtn;
+		}		
+	}
+	public void setEstimatedArrival(List<String> list){
+		estimatedArrivalTimeList = list;
+	}
 	public String toString(){
 		return route.getTag()+"-"+route.getName() +separator+
 				fromStop.getStopId()+"-"+fromStop.getName() +separator+ 

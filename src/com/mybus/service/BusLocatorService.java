@@ -30,9 +30,14 @@ public class BusLocatorService {
 	 * @return
 	 */
 	public List<Route> getRoutes(){
-		String routesJson = getJsonString(serverName+"/busInfo/getRoutes/mbta");
 		List<Route> routes = new ArrayList<Route>();
-		try{
+		routes.add(new Route("1","1"));
+		routes.add(new Route("2","2"));
+		routes.add(new Route("3","3"));
+		
+		//String routesJson = getJsonString(serverName+"/busInfo/getRoutes/mbta");
+		
+		/*try{
 			JSONObject json = new JSONObject(routesJson);
 			JSONArray array = json.getJSONArray("routes");
 			for (int i=0; i< array.length();i++){
@@ -42,7 +47,7 @@ public class BusLocatorService {
 		}catch(Exception e){
 			Log.e(BusLocatorService.class.toString(),e.getLocalizedMessage());
 			
-		}
+		}*/
 		return routes;
 	}
 	

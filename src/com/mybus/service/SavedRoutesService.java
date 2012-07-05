@@ -34,7 +34,6 @@ public class SavedRoutesService {
 		editor.putInt(ROUTE_COUNT_NAME, routeCount+1);
 		editor.putString(ROUTE_INFO+routeCount, trip.toString());
 		editor.apply();
-		Toast.makeText(context, "Saved", 2000).show();
 	}
 	
 	public List<BusTrip> getRoutes(){
@@ -51,9 +50,15 @@ public class SavedRoutesService {
 		return tripList;
 	}
 	
-	public void deleteRoute(){
-		Toast.makeText(context, "Deleted ToDO", 2000).show();
+	public void deleteRoute(int index){
+		List<BusTrip> tripList = getRoutes();
+		tripList.remove(index);
+		preferences.edit().clear().apply();
 		
+		for (BusTrip trip:tripList){
+			saveRoute(trip);
+		}
+			
 	}
 	
 }
