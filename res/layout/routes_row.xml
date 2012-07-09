@@ -54,14 +54,13 @@
 
     <TextView
         android:id="@+id/timeEstimate"
-        android:layout_width="match_parent"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_centerVertical="true"
         android:layout_margin="5dp"
         android:layout_marginLeft="87dp"
         android:layout_toRightOf="@+id/fromStopId"
         android:layout_alignParentRight="true"
-        android:clickable="true"
         android:gravity="center_vertical"
         android:text="some time"
         android:textSize="16sp"
