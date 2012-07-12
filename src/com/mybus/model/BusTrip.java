@@ -42,8 +42,10 @@ public class BusTrip {
 	
 	public String getEstimatedArrival(){
 		if (estimatedArrivalTimeList == null)
+			return "Loading..";
+		else if (estimatedArrivalTimeList.isEmpty()){
 			return "N/A";
-		else{
+		}else{
 			String rtn ="";
 			for (String str: estimatedArrivalTimeList){
 				rtn +=str +" ";

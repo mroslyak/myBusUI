@@ -53,6 +53,7 @@ public class RouteListRowAdapter extends ArrayAdapter<BusTrip> {
             textView.setText(trip.getToStop().getName());
             
             textView = (TextView) view.findViewById(R.id.timeEstimate);
+            
             textView.setText(trip.getEstimatedArrival());
             return view;		
 	}
