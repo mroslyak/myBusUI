@@ -98,7 +98,7 @@ public class BusLocatorService {
 			for (int i=0; i< routeNames.length(); i++){
 				String busNumber = (String)routeNames.get(i);
 				String busTime = estimatejson.getString(busNumber);
-				estimateList.add(busNumber +":("+busTime +") ");
+				estimateList.add("#"+busNumber +" ("+busTime +") ");
 			}
 			
 		}catch(Exception e){

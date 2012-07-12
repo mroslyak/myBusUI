@@ -5,6 +5,7 @@ import java.util.Timer;
 import java.util.TimerTask;
 import java.util.concurrent.ScheduledExecutorService;
 
+import android.app.Activity;
 import android.app.ListActivity;
 import android.content.Context;
 import android.content.Intent;
@@ -43,7 +44,7 @@ public class RoutesListActivity extends ListActivity {
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
-		
+
 		savedRoutesService = new SavedRoutesService(this);
 		List<BusTrip> userRoutes = savedRoutesService.getRoutes();
 
@@ -54,20 +55,19 @@ public class RoutesListActivity extends ListActivity {
 
 		getListView().setLongClickable(true);
 		registerForContextMenu(getListView());
-		
-		
-		if (haveNetworkConnection() == false){
-			Toast.makeText(this, "No Network Connection", Toast.LENGTH_SHORT);
-			finish();
-		}
+
 	}
 
 	@Override
 	public void onResume() {
 		super.onResume();
-		refreshScreenTimer = new Timer();
-		refreshScreenTimer.schedule(new RefreshListTimer(), 1000,30000);
-
+		if (haveNetworkConnection() == false) {
+			Toast.makeText(this, "No Network Connection", Toast.LENGTH_LONG);
+		} else {
+			refreshScreenTimer = new Timer();
+			refreshScreenTimer
+					.schedule(new RefreshListTimer(this), 1000, 30000);
+		}
 	}
 
 	@Override
@@ -142,42 +142,45 @@ public class RoutesListActivity extends ListActivity {
 		}
 	}
 
-	
-	private class RefreshListTimer extends TimerTask{
-		
-			public void run() {
-				mHandler.post(new Runnable() {
-					public void run(){
-						new UpdateMainScreenAsyncTask(routeAdapter).execute("");
-					}
-				});
-			}
+	private class RefreshListTimer extends TimerTask {
+		Activity activity;
+
+		public RefreshListTimer(Activity activity) {
+			this.activity = activity;
 		}
-	
+
+		public void run() {
+
+			mHandler.post(new Runnable() {
+				public void run() {
+					new UpdateMainScreenAsyncTask(routeAdapter).execute("");
+				}
+			});
+		}
+	}
 
 	@Override
 	protected void onPause() {
 		super.onPause();
-		refreshScreenTimer.cancel();
-	
-		
-	}
-	
-	
-	private boolean haveNetworkConnection() {
-	    boolean haveConnectedWifi = false;
-	    boolean haveConnectedMobile = false;
+		if (refreshScreenTimer != null)
+			refreshScreenTimer.cancel();
 
-	    ConnectivityManager cm = (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
-	    NetworkInfo[] netInfo = cm.getAllNetworkInfo();
-	    for (NetworkInfo ni : netInfo) {
-	        if (ni.getTypeName().equalsIgnoreCase("WIFI"))
-	            if (ni.isConnected())
-	                haveConnectedWifi = true;
-	        if (ni.getTypeName().equalsIgnoreCase("MOBILE"))
-	            if (ni.isConnected())
-	                haveConnectedMobile = true;
-	    }
-	    return haveConnectedWifi || haveConnectedMobile;
+	}
+
+	private boolean haveNetworkConnection() {
+		boolean haveConnectedWifi = false;
+		boolean haveConnectedMobile = false;
+
+		ConnectivityManager cm = (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
+		NetworkInfo[] netInfo = cm.getAllNetworkInfo();
+		for (NetworkInfo ni : netInfo) {
+			if (ni.getTypeName().equalsIgnoreCase("WIFI"))
+				if (ni.isConnected())
+					haveConnectedWifi = true;
+			if (ni.getTypeName().equalsIgnoreCase("MOBILE"))
+				if (ni.isConnected())
+					haveConnectedMobile = true;
+		}
+		return haveConnectedWifi || haveConnectedMobile;
 	}
 }
