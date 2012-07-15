@@ -85,20 +85,20 @@ public class BusLocatorService {
 		return busRouteList; 
 	}
 	
-	public List<String> getPredictionInformation(String fromBusTag,String toBusTag){
+	public Map<String,String> getPredictionInformation(String fromBusTag,String toBusTag){
 		String jsonStr = getJsonString(serverName+"/busInfo/getEstimate/mbta/"+fromBusTag +"/"+toBusTag);
-		List<String> estimateList = new ArrayList<String>();
+		Map<String,String> estimateList = new HashMap<String,String>();
 		try{
 			JSONObject estimatejson = new JSONObject(jsonStr);
 			JSONArray routeNames = estimatejson.names();
 			if (routeNames == null){
-				estimateList.add("N/A");
 				return estimateList;
 			}
+			
 			for (int i=0; i< routeNames.length(); i++){
 				String busNumber = (String)routeNames.get(i);
 				String busTime = estimatejson.getString(busNumber);
-				estimateList.add("#"+busNumber +" ("+busTime +") ");
+				estimateList.put(busNumber ,busTime);
 			}
 			
 		}catch(Exception e){

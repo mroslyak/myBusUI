@@ -12,6 +12,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import android.widget.BaseAdapter;
+import android.widget.Button;
 import android.widget.TextView;
 
 
@@ -52,9 +53,20 @@ public class RouteListRowAdapter extends ArrayAdapter<BusTrip> {
             textView = (TextView) view.findViewById(R.id.toStopId);
             textView.setText(trip.getToStop().getName());
             
-            textView = (TextView) view.findViewById(R.id.timeEstimate);
+            textView = (TextView) view.findViewById(R.id.nextBusEstimate);
+            if (trip.getNextArrivalTime() == null)
+            	textView.setText("");
+            else
+            	textView.setText(trip.getNextArrivalTime() +" min");
             
-            textView.setText(trip.getEstimatedArrival());
+            textView = (TextView) view.findViewById(R.id.nextBusNumber);
+            if (trip.getNextArrivalBusNumber() == null){
+            	textView.setText("No Predictions");
+            }else
+            	textView.setText(trip.getNextArrivalBusNumber());
+            
+            Button btn = (Button)view.findViewById(R.id.moreDetailLink);
+            btn.setTag(new Integer(position));
             return view;		
 	}
 

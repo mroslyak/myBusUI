@@ -1,11 +1,13 @@
 package com.mybus.model;
 
+import java.io.Serializable;
 import java.util.List;
+import java.util.Map;
 
-public class BusTrip {
+public class BusTrip implements Serializable {
 	Route route;
 	Stop fromStop, toStop;
-	List<String> estimatedArrivalTimeList;
+	Map<String,String> estimatedArrivalTimeList;
 	private static final String separator =":";
 	public BusTrip(String savedTrip){
 		String[] segments = savedTrip.split(separator);
@@ -40,20 +42,26 @@ public class BusTrip {
 		this.toStop = toStop;
 	}
 	
-	public String getEstimatedArrival(){
+	public String getNextArrivalBusNumber(){
 		if (estimatedArrivalTimeList == null)
 			return "Loading..";
-		else if (estimatedArrivalTimeList.isEmpty()){
-			return "N/A";
-		}else{
-			String rtn ="";
-			for (String str: estimatedArrivalTimeList){
-				rtn +=str +" ";
-			}
-			return rtn;
-		}		
+		String bus = estimatedArrivalTimeList.get("nextBusRoute");
+		if (bus == null)
+			return null;
+		
+		return bus;		
 	}
-	public void setEstimatedArrival(List<String> list){
+	public String getNextArrivalTime(){
+		if (estimatedArrivalTimeList == null)
+			return "Loading..";
+		
+		String time = estimatedArrivalTimeList.get("nextBusEstimate");
+		if (time == null)
+			return "N/A";
+		return time;
+	}
+	
+	public void setEstimatedArrival(Map<String,String> list){
 		estimatedArrivalTimeList = list;
 	}
 	public String toString(){

@@ -1,6 +1,8 @@
 package com.mybus.model;
 
-public class Route {
+import java.io.Serializable;
+
+public class Route implements Serializable{
 	String tag, name;
 
 	public Route(String a, String b) {

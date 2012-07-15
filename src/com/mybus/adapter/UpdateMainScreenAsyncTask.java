@@ -19,9 +19,8 @@ public class  UpdateMainScreenAsyncTask extends AsyncTask<String, Void, String>{
 	protected String doInBackground(String... params) {
 		for (int i = 0; i < routeAdapter.getCount(); i++) {
 			BusTrip trip = (BusTrip) routeAdapter.getItem(i);
-			List<String> times =service.getPredictionInformation(trip.getFromStop().getStopId(), trip.getToStop().getStopId());
-			//times.add(new Date().getSeconds()+"");
-			trip.setEstimatedArrival(times);
+			
+			trip.setEstimatedArrival(service.getPredictionInformation(trip.getFromStop().getStopId(), trip.getToStop().getStopId()));
 		}
 		return " ";
 	}

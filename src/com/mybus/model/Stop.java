@@ -1,6 +1,8 @@
 package com.mybus.model;
 
-public class Stop {
+import java.io.Serializable;
+
+public class Stop implements Serializable {
 
 	String name, stopId;
 

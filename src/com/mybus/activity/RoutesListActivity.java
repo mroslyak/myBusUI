@@ -19,6 +19,7 @@ import android.view.ContextMenu.ContextMenuInfo;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.ViewParent;
 import android.widget.AdapterView;
 import android.widget.Button;
 import android.widget.ListView;
@@ -167,6 +168,11 @@ public class RoutesListActivity extends ListActivity {
 
 	}
 
+	
+	/**
+	 * Check if there is network connection
+	 * @return
+	 */
 	private boolean haveNetworkConnection() {
 		boolean haveConnectedWifi = false;
 		boolean haveConnectedMobile = false;
@@ -182,5 +188,19 @@ public class RoutesListActivity extends ListActivity {
 					haveConnectedMobile = true;
 		}
 		return haveConnectedWifi || haveConnectedMobile;
+	}
+	
+	
+	public void showDetailedRoute(View view){
+		
+		Toast.makeText(this, "yes "+view.getTag(), Toast.LENGTH_SHORT);
+		BusTrip trip = routeAdapter.getItem(( Integer)view.getTag());
+		
+		Intent detailIntent = new Intent(getApplicationContext(),DetailedRouteActivity.class);
+		Bundle bundle = new Bundle();
+		bundle.putSerializable("selectedRoute", trip);
+		detailIntent.putExtras(bundle);
+		startActivity(detailIntent);
+
 	}
 }
