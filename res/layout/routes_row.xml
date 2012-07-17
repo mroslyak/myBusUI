@@ -78,7 +78,8 @@
         android:layout_margin="2dp"
         android:layout_toRightOf="@+id/nextBus"
         android:text="60"
-        android:textSize="14sp"
+        android:textSize="15sp"
+        android:textColor="#000000"
         android:textStyle="bold" />
 
     <TextView
@@ -104,7 +105,8 @@
         android:layout_margin="2dp"
         android:layout_toRightOf="@+id/timeEstimate"
         android:text=""
-        android:textSize="16sp"
+        android:textSize="15sp"
+        android:textColor="#000000"
         android:textStyle="bold" />
 
     

@@ -61,6 +61,9 @@ public class BusTrip implements Serializable {
 		return time;
 	}
 	
+	public Map<String,String> getEstimatedArrivalMap(){
+		return estimatedArrivalTimeList;
+	}
 	public void setEstimatedArrival(Map<String,String> list){
 		estimatedArrivalTimeList = list;
 	}
