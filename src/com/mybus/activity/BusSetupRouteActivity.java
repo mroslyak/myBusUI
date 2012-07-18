@@ -25,11 +25,10 @@ import android.widget.Spinner;
 import android.widget.AdapterView;
 import android.widget.SpinnerAdapter;
 
-public class SetupRouteActivity extends Activity {
+public class BusSetupRouteActivity extends Activity {
 	static String APP_NAME = "myBus";
 	private BusLocatorService service = new BusLocatorService();
 
-	private List<BusRoute> currentBusRoutes;
 
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
@@ -138,7 +137,7 @@ public class SetupRouteActivity extends Activity {
 				spinner.setAdapter(dataAdapter);
 			} else if (action.equals("stops")) {
 				List<BusRoute> busRoutes = (List<BusRoute>) result;
-				currentBusRoutes = busRoutes;
+				//currentBusRoutes = busRoutes;
 				Spinner spinnerDirection = (Spinner) findViewById(R.id.direction);
 				ArrayAdapter dataAdapter = new ArrayAdapter(activity,
 						android.R.layout.simple_spinner_item, busRoutes);

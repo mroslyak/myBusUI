@@ -102,26 +102,36 @@ public class RoutesListActivity extends ListActivity {
 	@Override
 	public boolean onCreateOptionsMenu(Menu menu) {
 		super.onCreateOptionsMenu(menu);
-		menu.add(0, Menu.FIRST, 0, "Setup").setShortcut('0', 's');
+		menu.add(0, Menu.FIRST, 0, "Bus Route Setup").setShortcut('0', 'b');
+		menu.add(0, Menu.FIRST+1, 0, "MBTA Train Setup").setShortcut('1', 't');
 
 		return true;
 	}
 
 	@Override
 	public boolean onOptionsItemSelected(MenuItem item) {
-		if (item.getTitle().equals("Setup")) {
-			showSetupActivity(null);
+//		if (item.getTitle().equals("Setup")) {
+		if (item.getItemId() == Menu.FIRST){
+			showBusSetupActivity(null);
 
 			return true;
+		}
+		if (item.getItemId() == (Menu.FIRST +1)){
+			Toast.makeText(this, "adding mbta", Toast.LENGTH_LONG);
+			showTrainSetupActivity(null);
 		}
 
 		return super.onOptionsItemSelected(item);
 	}
 
-	public void showSetupActivity(View view) {
+	public void showBusSetupActivity(View view) {
 		startActivityForResult((new Intent(getApplicationContext(),
-				SetupRouteActivity.class)), 1);
+				BusSetupRouteActivity.class)), 1);
 
+	}
+	
+	public void showTrainSetupActivity(View view){
+		startActivityForResult(new Intent(getApplicationContext(),TrainSetupRouteActivity.class), 1);
 	}
 
 	@Override
