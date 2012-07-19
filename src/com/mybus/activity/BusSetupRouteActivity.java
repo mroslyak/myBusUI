@@ -42,7 +42,10 @@ public class BusSetupRouteActivity extends Activity {
 		routespinner.setOnItemSelectedListener(new RouteSelectedListener(this));
 		
 		Spinner directionspinner = (Spinner) findViewById(R.id.direction);
-		directionspinner.setOnItemSelectedListener(new DirectionSelectedListener(this));
+		directionspinner.setOnItemSelectedListener(new SpinnerItemSelectedListener(this,"direction"));
+		
+		Spinner fromStopSpinner = (Spinner) findViewById(R.id.fromBusStop);
+		fromStopSpinner.setOnItemSelectedListener(new SpinnerItemSelectedListener(this,"fromStop"));
 	}
 
 	public void addRoute(View view) {
@@ -63,22 +66,42 @@ public class BusSetupRouteActivity extends Activity {
 
 	}
 
-	private class DirectionSelectedListener implements AdapterView.OnItemSelectedListener {
+	private class SpinnerItemSelectedListener implements AdapterView.OnItemSelectedListener {
 		Activity activity;
+		String action;
 
-		public DirectionSelectedListener(Activity activity) {
+		public SpinnerItemSelectedListener(Activity activity,String action) {
 			this.activity = activity;
+			this.action = action;
 		}
 
 		@Override
 		public void onItemSelected(AdapterView<?> arg0, View arg1, int arg2,long arg3) {
-			BackgroundLoaderTask stopRoutesTask = new BackgroundLoaderTask(activity, "direction");
+			BackgroundLoaderTask stopRoutesTask = new BackgroundLoaderTask(activity, action);
 			stopRoutesTask.execute("");
 		}
 		@Override
 		public void onNothingSelected(AdapterView<?> arg0) {
 		}
 	}
+	
+	private class FromStopSelectedListener implements  AdapterView.OnItemSelectedListener {
+		Activity activity;
+
+		public FromStopSelectedListener(Activity activity) {
+			this.activity = activity;
+		}
+
+		@Override
+		public void onItemSelected(AdapterView<?> arg0, View arg1, int arg2,long arg3) {
+			BackgroundLoaderTask stopRoutesTask = new BackgroundLoaderTask(activity, "fromStop");
+			stopRoutesTask.execute("");
+		}
+		@Override
+		public void onNothingSelected(AdapterView<?> arg0) {
+		}
+	}
+	
 	private class RouteSelectedListener implements AdapterView.OnItemSelectedListener {
 		Activity activity;
 
@@ -116,7 +139,7 @@ public class BusSetupRouteActivity extends Activity {
 				Route selectedRoute = (Route) routeSpinner.getSelectedItem();
 				List<BusRoute> list = service.getStops(selectedRoute.getTag());
 				return list;
-			} else if (action.equals("direction"))
+			} else if (action.equals("direction") || action.equals("fromStop"))
 				return new ArrayList();
 			return null;
 		}
@@ -130,10 +153,8 @@ public class BusSetupRouteActivity extends Activity {
 				Spinner spinner = (Spinner) findViewById(R.id.route);
 				spinner.setPrompt("Choose Your Bus Route");
 				@SuppressWarnings({ "unchecked", "rawtypes" })
-				ArrayAdapter dataAdapter = new ArrayAdapter(activity,
-						android.R.layout.simple_spinner_item, result);
-				dataAdapter
-						.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+				ArrayAdapter dataAdapter = new ArrayAdapter(activity,android.R.layout.simple_spinner_item, result);
+				dataAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
 				spinner.setAdapter(dataAdapter);
 			} else if (action.equals("stops")) {
 				List<BusRoute> busRoutes = (List<BusRoute>) result;
@@ -141,33 +162,38 @@ public class BusSetupRouteActivity extends Activity {
 				Spinner spinnerDirection = (Spinner) findViewById(R.id.direction);
 				ArrayAdapter dataAdapter = new ArrayAdapter(activity,
 						android.R.layout.simple_spinner_item, busRoutes);
-				dataAdapter
-						.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+				dataAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
 				spinnerDirection.setAdapter(dataAdapter);
 
+				List<Stop> stopList = busRoutes.get(0).getStopList();
 				Spinner spinner = (Spinner) findViewById(R.id.fromBusStop);
-				ArrayAdapter dataAdapterFromStop = new ArrayAdapter(activity,
-						android.R.layout.simple_spinner_item, busRoutes.get(0)
-								.getStopList());
-				dataAdapterFromStop
-						.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+				ArrayAdapter dataAdapterFromStop = new ArrayAdapter(activity,android.R.layout.simple_spinner_item, stopList.subList(0, stopList.size()-1));
+				dataAdapterFromStop.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
 				spinner.setAdapter(dataAdapterFromStop);
 
-				Spinner spinner2 = (Spinner) findViewById(R.id.toBusStop);
-				spinner2.setAdapter(dataAdapterFromStop);
 
 			}else if (action.equals("direction")){
 				Spinner spinnerDirection = (Spinner) findViewById(R.id.direction);
 				BusRoute busRoute = (BusRoute)spinnerDirection.getSelectedItem();
+				
 				Spinner spinner = (Spinner) findViewById(R.id.fromBusStop);
-				ArrayAdapter dataAdapterFromStop = new ArrayAdapter(activity,
-						android.R.layout.simple_spinner_item, busRoute.getStopList());
+				ArrayAdapter dataAdapterFromStop = new ArrayAdapter(activity,android.R.layout.simple_spinner_item, busRoute.getStopList().subList(0, busRoute.getStopList().size()-1));
 				dataAdapterFromStop.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
 				spinner.setAdapter(dataAdapterFromStop);
 
-				Spinner spinner2 = (Spinner) findViewById(R.id.toBusStop);
-				spinner2.setAdapter(dataAdapterFromStop);
 				
+			}else if (action.equals("fromStop")){
+				Spinner spinnerDirection = (Spinner) findViewById(R.id.direction);
+				BusRoute busRoute = (BusRoute)spinnerDirection.getSelectedItem();
+				
+				Spinner spinner = (Spinner) findViewById(R.id.fromBusStop);
+				int position =  spinner.getSelectedItemPosition();
+				
+				ArrayAdapter dataAdapterToStop = new ArrayAdapter(activity,android.R.layout.simple_spinner_item, busRoute.getStopList().subList(position+1, busRoute.getStopList().size()));
+				dataAdapterToStop.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+
+				Spinner spinner2 = (Spinner) findViewById(R.id.toBusStop);
+				spinner2.setAdapter(dataAdapterToStop);
 			}
 		}
 	}

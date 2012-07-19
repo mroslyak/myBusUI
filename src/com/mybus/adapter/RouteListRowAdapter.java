@@ -60,12 +60,16 @@ public class RouteListRowAdapter extends ArrayAdapter<BusTrip> {
             	textView.setText(trip.getNextArrivalTime() +" min");
             
             textView = (TextView) view.findViewById(R.id.nextBusNumber);
+            Button btn = (Button)view.findViewById(R.id.moreDetailLink);
+            
             if (trip.getNextArrivalBusNumber() == null){
             	textView.setText("No Predictions");
-            }else
+            	btn.setVisibility(View.GONE);
+            }else{
             	textView.setText(trip.getNextArrivalBusNumber());
+            	btn.setVisibility(View.VISIBLE);
+            }
             
-            Button btn = (Button)view.findViewById(R.id.moreDetailLink);
             btn.setTag(new Integer(position));
             
             btn.setLongClickable(true);
