@@ -67,6 +67,8 @@ public class RouteListRowAdapter extends ArrayAdapter<BusTrip> {
             
             Button btn = (Button)view.findViewById(R.id.moreDetailLink);
             btn.setTag(new Integer(position));
+            
+            btn.setLongClickable(true);
             return view;		
 	}
 

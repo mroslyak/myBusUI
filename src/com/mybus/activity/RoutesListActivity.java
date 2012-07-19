@@ -1,5 +1,6 @@
 package com.mybus.activity;
 
+import java.util.HashMap;
 import java.util.List;
 import java.util.Timer;
 import java.util.TimerTask;
@@ -55,6 +56,7 @@ public class RoutesListActivity extends ListActivity {
 		setListAdapter(routeAdapter);
 
 		getListView().setLongClickable(true);
+		
 		registerForContextMenu(getListView());
 
 	}
@@ -63,7 +65,10 @@ public class RoutesListActivity extends ListActivity {
 	public void onResume() {
 		super.onResume();
 		if (haveNetworkConnection() == false) {
-			Toast.makeText(this, "No Network Connection", Toast.LENGTH_LONG);
+			Toast.makeText(this, "No Network Connection", Toast.LENGTH_LONG).show();
+			for (int i=0;i< routeAdapter.getCount();i++){
+				routeAdapter.getItem(i).setEstimatedArrival(new HashMap<String, String>());
+			}
 		} else {
 			refreshScreenTimer = new Timer();
 			refreshScreenTimer
@@ -117,7 +122,7 @@ public class RoutesListActivity extends ListActivity {
 			return true;
 		}
 		if (item.getItemId() == (Menu.FIRST +1)){
-			Toast.makeText(this, "adding mbta", Toast.LENGTH_LONG);
+			Toast.makeText(this, "adding mbta", Toast.LENGTH_LONG).show();
 			showTrainSetupActivity(null);
 		}
 
@@ -202,8 +207,6 @@ public class RoutesListActivity extends ListActivity {
 	
 	
 	public void showDetailedRoute(View view){
-		
-		Toast.makeText(this, "yes "+view.getTag(), Toast.LENGTH_SHORT);
 		BusTrip trip = routeAdapter.getItem(( Integer)view.getTag());
 		
 		Intent detailIntent = new Intent(getApplicationContext(),DetailedRouteActivity.class);
