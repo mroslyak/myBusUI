@@ -3,12 +3,17 @@ package com.mybus.activity;
 import java.util.ArrayList;
 import java.util.List;
 
+import com.mybus.model.TrainTrip;
+import com.mybus.model.Trip;
 import com.mybus.model.RouteInfo;
 import com.mybus.model.RouteName;
 import com.mybus.model.Stop;
+import com.mybus.service.BusPreferenceService;
 import com.mybus.service.TrainLocatorService;
+import com.mybus.service.TrainPreferenceService;
 
 import android.app.Activity;
+import android.content.Intent;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.view.View;
@@ -139,5 +144,25 @@ public class TrainSetupRouteActivity extends Activity {
 
 			} 
 		}
+	}
+	
+	
+	public void addTrainRoute(View view){
+		Spinner lineSpinner = (Spinner) findViewById(R.id.train_line);
+		Spinner directionSpinner = (Spinner) findViewById(R.id.train_direction);
+		Spinner stopSpinner = (Spinner) findViewById(R.id.train_stop);
+
+		Trip newTrainRoute = new TrainTrip();
+		newTrainRoute.setRoute((RouteName) lineSpinner.getSelectedItem());
+		newTrainRoute.setFromStop((Stop) stopSpinner.getSelectedItem());
+		newTrainRoute.setToStop((RouteInfo)directionSpinner.getSelectedItem());
+
+		TrainPreferenceService service = new TrainPreferenceService(this);
+		service.saveRoute(newTrainRoute);
+		Intent in = new Intent();
+		setResult(2, in);
+		finish();
+
+		
 	}
 }

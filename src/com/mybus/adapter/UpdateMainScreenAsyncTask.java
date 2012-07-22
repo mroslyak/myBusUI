@@ -7,10 +7,14 @@ import java.util.List;
 import android.os.AsyncTask;
 
 import com.mybus.model.BusTrip;
+import com.mybus.model.TrainTrip;
+import com.mybus.model.Trip;
 import com.mybus.service.BusLocatorService;
+import com.mybus.service.TrainLocatorService;
 
 public class  UpdateMainScreenAsyncTask extends AsyncTask<String, Void, String>{
-	BusLocatorService service = new BusLocatorService();
+	BusLocatorService busService = new BusLocatorService();
+	TrainLocatorService trainService = new TrainLocatorService();
 	RouteListRowAdapter routeAdapter;
 	public UpdateMainScreenAsyncTask(RouteListRowAdapter adapter){
 		this.routeAdapter = adapter;
@@ -18,9 +22,13 @@ public class  UpdateMainScreenAsyncTask extends AsyncTask<String, Void, String>{
 	@Override
 	protected String doInBackground(String... params) {
 		for (int i = 0; i < routeAdapter.getCount(); i++) {
-			BusTrip trip = (BusTrip) routeAdapter.getItem(i);
+			Trip trip = (Trip) routeAdapter.getItem(i);
 			
-			trip.setEstimatedArrival(service.getPredictionInformation(trip.getFromStop().getStopId(), trip.getToStop().getStopId()));
+			if (trip instanceof BusTrip)
+				trip.setEstimatedArrival(busService.getPredictionInformation(trip.getFromStop().getStopId(), trip.getToStop().getStopId()));
+			
+			if (trip instanceof TrainTrip)
+				trip.setEstimatedArrival(trainService.getPredictionInformation((TrainTrip)trip));
 		}
 		return " ";
 	}

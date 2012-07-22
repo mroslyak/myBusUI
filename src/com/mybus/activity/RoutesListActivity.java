@@ -29,11 +29,14 @@ import android.widget.Toast;
 
 import com.mybus.adapter.RouteListRowAdapter;
 import com.mybus.adapter.UpdateMainScreenAsyncTask;
-import com.mybus.model.BusTrip;
-import com.mybus.service.SavedRoutesService;
+import com.mybus.model.Trip;
+import com.mybus.service.BusPreferenceService;
+import com.mybus.service.PreferenceService;
+import com.mybus.service.TrainPreferenceService;
 
 public class RoutesListActivity extends ListActivity {
-	SavedRoutesService savedRoutesService;
+	PreferenceService<Trip> busPreferenceService, trainPreferenceService;
+	
 	ScheduledExecutorService executorService;
 	// used for context menu to know which item in the listview was clicked.
 	int clickedRoutePosition;
@@ -47,12 +50,17 @@ public class RoutesListActivity extends ListActivity {
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 
-		savedRoutesService = new SavedRoutesService(this);
-		List<BusTrip> userRoutes = savedRoutesService.getRoutes();
-
+		busPreferenceService = new BusPreferenceService(this);
+		trainPreferenceService = new TrainPreferenceService(this);
+		
+		List<Trip> userBusRoutes = busPreferenceService.getRoutes();
+		List<Trip> userTrainRoutes = trainPreferenceService.getRoutes();
+		
+		userBusRoutes.addAll(userTrainRoutes);
+		
 		setContentView(R.layout.routes_main);
 
-		routeAdapter = new RouteListRowAdapter(this, userRoutes);
+		routeAdapter = new RouteListRowAdapter(this, userBusRoutes);
 		setListAdapter(routeAdapter);
 
 		getListView().setLongClickable(true);
@@ -91,9 +99,9 @@ public class RoutesListActivity extends ListActivity {
 	@Override
 	public boolean onContextItemSelected(MenuItem item) {
 		if (item.getTitle() == "Remove") {
-			savedRoutesService.deleteRoute(clickedRoutePosition);
+			busPreferenceService.deleteRoute(clickedRoutePosition);
 
-			BusTrip trip = routeAdapter.getItem(clickedRoutePosition);
+			Trip trip = routeAdapter.getItem(clickedRoutePosition);
 			routeAdapter.remove(trip);
 			routeAdapter.notifyDataSetChanged();
 			Toast.makeText(this, "Removed", 2000).show();
@@ -136,7 +144,7 @@ public class RoutesListActivity extends ListActivity {
 	}
 	
 	public void showTrainSetupActivity(View view){
-		startActivityForResult(new Intent(getApplicationContext(),TrainSetupRouteActivity.class), 1);
+		startActivityForResult(new Intent(getApplicationContext(),TrainSetupRouteActivity.class), 2);
 	}
 
 	@Override
@@ -146,16 +154,15 @@ public class RoutesListActivity extends ListActivity {
 
 		super.onActivityResult(requestCode, resultCode, data);
 		if (resultCode == 1) {
-			if (savedRoutesService.getRoutesCount() > routeAdapter.getCount()) {
-				List<BusTrip> updatedTrips = savedRoutesService.getRoutes();
+			if (busPreferenceService.getRoutesCount() > routeAdapter.getCount()) {
+				List<Trip> updatedTrips = busPreferenceService.getRoutes();
 				routeAdapter.add(updatedTrips.get(updatedTrips.size() - 1));
 				routeAdapter.notifyDataSetChanged();
 				Toast.makeText(this, "Added", 2000).show();
 
 			}
-		} else {
-			Toast.makeText(this, "Fail", Toast.LENGTH_LONG).show();
-		}
+		} 
+	
 	}
 
 	private class RefreshListTimer extends TimerTask {
@@ -207,7 +214,7 @@ public class RoutesListActivity extends ListActivity {
 	
 	
 	public void showDetailedRoute(View view){
-		BusTrip trip = routeAdapter.getItem(( Integer)view.getTag());
+		Trip trip = routeAdapter.getItem(( Integer)view.getTag());
 		
 		Intent detailIntent = new Intent(getApplicationContext(),DetailedRouteActivity.class);
 		Bundle bundle = new Bundle();

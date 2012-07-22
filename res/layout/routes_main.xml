@@ -28,6 +28,6 @@
     android:layout_height="wrap_content"
     android:layout_alignParentLeft="true"
     android:layout_gravity="center"
-    android:onClick="showSetupActivity"
+    android:onClick="showBusSetupActivity"
     android:visibility="visible"/>
 </LinearLayout>

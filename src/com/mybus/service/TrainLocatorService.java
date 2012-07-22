@@ -1,8 +1,10 @@
 package com.mybus.service;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
 
 import org.json.JSONArray;
 import org.json.JSONObject;
@@ -12,6 +14,7 @@ import android.util.Log;
 import com.mybus.model.RouteInfo;
 import com.mybus.model.RouteName;
 import com.mybus.model.Stop;
+import com.mybus.model.TrainTrip;
 
 public class TrainLocatorService extends LocatorService{
 
@@ -25,6 +28,15 @@ public class TrainLocatorService extends LocatorService{
 	}
 	
 	
+	
+	public  Map<String,String> getPredictionInformation(TrainTrip trip){
+		String response = getJsonString(serverName +"/trainInfo/estimate/"+trip.getRoute().getName() +"/"+ trip.getFromStop().getStopId());
+		Map<String,String> estimateMap = new HashMap<String, String>();
+		estimateMap.put(trip.getRoute().getName(), response);
+		
+		return estimateMap;
+		
+	}
 	public List<RouteInfo> getStops(String routeTag){
 		List<RouteInfo> trainRouteList = new ArrayList<RouteInfo>();
 		String responseJson = getJsonString(serverName+"/trainInfo/stops/"+routeTag);

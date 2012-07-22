@@ -2,7 +2,7 @@ package com.mybus.activity;
 
 import java.util.Map;
 
-import com.mybus.model.BusTrip;
+import com.mybus.model.Trip;
 
 import android.app.Activity;
 import android.graphics.Color;
@@ -22,7 +22,7 @@ public class DetailedRouteActivity extends Activity {
 
 		Bundle b = getIntent().getExtras();
 		
-		BusTrip trip = (BusTrip) b.getSerializable("selectedRoute");
+		Trip trip = (Trip) b.getSerializable("selectedRoute");
 		TextView text = (TextView) findViewById(R.id.fromStopIdDetail);
 		text.setText(trip.getFromStop().getName());
 		

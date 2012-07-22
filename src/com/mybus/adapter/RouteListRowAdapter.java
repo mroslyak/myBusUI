@@ -4,7 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import com.mybus.activity.R;
-import com.mybus.model.BusTrip;
+import com.mybus.model.Trip;
 
 import android.content.Context;
 import android.view.LayoutInflater;
@@ -16,19 +16,19 @@ import android.widget.Button;
 import android.widget.TextView;
 
 
-public class RouteListRowAdapter extends ArrayAdapter<BusTrip> {
+public class RouteListRowAdapter extends ArrayAdapter<Trip> {
 
 
 	private Context context = null;
-	private ArrayList<BusTrip> routeList = null;
+	private ArrayList<Trip> routeList = null;
 	private LayoutInflater inflater = null;
 
 	public RouteListRowAdapter(Context context,
-			List<BusTrip> objects) {
+			List<Trip> objects) {
 		super(context, R.layout.routes_row,objects);
 		
 		this.context = context;
-		this.routeList = (ArrayList<BusTrip>)objects;
+		this.routeList = (ArrayList<Trip>)objects;
 		this.inflater = LayoutInflater.from(this.context);
 	}
 	
@@ -44,24 +44,24 @@ public class RouteListRowAdapter extends ArrayAdapter<BusTrip> {
 	@Override
 	public View getView(int position, View convertView, ViewGroup parent) {
 		    View view = inflater.inflate(R.layout.routes_row, null);
-           // ImageView image = (ImageView) view.findViewById(R.id.rowImage);
-           // image.setImageResource(R.drawable.ic_launcher);
             
-		    BusTrip trip = routeList.get(position);
-            TextView textView = (TextView) view.findViewById(R.id.fromStopId);
-            textView.setText( trip.getFromStop().getName() );
-            textView = (TextView) view.findViewById(R.id.toStopId);
-            textView.setText(trip.getToStop().getName());
+		    Trip trip = routeList.get(position);
+            TextView startingStopTV = (TextView) view.findViewById(R.id.fromStopId);
+            TextView goingToTV = (TextView) view.findViewById(R.id.toStopId);
+            TextView estimateTV = (TextView) view.findViewById(R.id.nextBusEstimate);
             
-            textView = (TextView) view.findViewById(R.id.nextBusEstimate);
+
+            startingStopTV.setText( trip.getFromStop().getName() );
+            goingToTV.setText(trip.getToStop().getName());
+            
             if (trip.getNextArrivalTime() == null)
-            	textView.setText("");
+            	estimateTV.setText("");
             else
-            	textView.setText(trip.getNextArrivalTime() +" min");
+            	estimateTV.setText(trip.getNextArrivalTime() +" min");
             
-            textView = (TextView) view.findViewById(R.id.nextBusNumber);
+            
+            TextView textView = (TextView) view.findViewById(R.id.nextBusNumber);
             Button btn = (Button)view.findViewById(R.id.moreDetailLink);
-            
             if (trip.getNextArrivalBusNumber() == null){
             	textView.setText("No Predictions");
             	btn.setVisibility(View.GONE);

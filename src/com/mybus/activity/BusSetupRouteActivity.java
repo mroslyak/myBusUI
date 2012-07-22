@@ -6,12 +6,13 @@ import java.util.List;
 import org.apache.http.client.methods.HttpGet;
 import org.apache.http.impl.client.DefaultHttpClient;
 
-import com.mybus.model.RouteInfo;
 import com.mybus.model.BusTrip;
+import com.mybus.model.RouteInfo;
+import com.mybus.model.Trip;
 import com.mybus.model.RouteName;
 import com.mybus.model.Stop;
 import com.mybus.service.BusLocatorService;
-import com.mybus.service.SavedRoutesService;
+import com.mybus.service.BusPreferenceService;
 
 import android.app.Activity;
 import android.content.Intent;
@@ -53,12 +54,12 @@ public class BusSetupRouteActivity extends Activity {
 		Spinner fromStopSpinner = (Spinner) findViewById(R.id.fromBusStop);
 		Spinner toStopSpinner = (Spinner) findViewById(R.id.toBusStop);
 
-		BusTrip newBusRoute = new BusTrip();
+		Trip newBusRoute = new BusTrip();
 		newBusRoute.setRoute((RouteName) routeSpinner.getSelectedItem());
 		newBusRoute.setFromStop((Stop) fromStopSpinner.getSelectedItem());
 		newBusRoute.setToStop((Stop) toStopSpinner.getSelectedItem());
 
-		SavedRoutesService service = new SavedRoutesService(this);
+		BusPreferenceService service = new BusPreferenceService(this);
 		service.saveRoute(newBusRoute);
 		Intent in = new Intent();
 		setResult(1, in);
