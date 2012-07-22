@@ -30,11 +30,27 @@ public class TrainLocatorService extends LocatorService{
 	
 	
 	public  Map<String,String> getPredictionInformation(TrainTrip trip){
-		String response = getJsonString(serverName +"/trainInfo/estimate/"+trip.getRoute().getName() +"/"+ trip.getFromStop().getStopId());
-		Map<String,String> estimateMap = new HashMap<String, String>();
-		estimateMap.put(trip.getRoute().getName(), response);
+		String jsonStr = getJsonString(serverName +"/trainInfo/estimate/"+trip.getRoute().getName() +"/"+ trip.getFromStop().getStopId());
 		
-		return estimateMap;
+		Map<String,String> estimateList = new HashMap<String,String>();
+		try{
+			JSONObject estimatejson = new JSONObject(jsonStr);
+			JSONArray routeNames = estimatejson.names();
+			if (routeNames == null){
+				return estimateList;
+			}
+			
+			for (int i=0; i< routeNames.length(); i++){
+				String routeName = (String)routeNames.get(i);
+				String routeTime = estimatejson.getString(routeName);
+				estimateList.put(routeName ,routeTime);
+			}
+			
+		}catch(Exception e){
+			Log.e(BusLocatorService.class.toString(),e.getLocalizedMessage());
+			
+		}	
+		return estimateList;
 		
 	}
 	public List<RouteInfo> getStops(String routeTag){
