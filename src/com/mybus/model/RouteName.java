@@ -2,10 +2,10 @@ package com.mybus.model;
 
 import java.io.Serializable;
 
-public class Route implements Serializable{
+public class RouteName implements Serializable{
 	String tag, name;
 
-	public Route(String a, String b) {
+	public RouteName(String a, String b) {
 		this.tag = a;
 		this.name = b;
 	}

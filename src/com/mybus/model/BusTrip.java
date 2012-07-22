@@ -5,14 +5,14 @@ import java.util.List;
 import java.util.Map;
 
 public class BusTrip implements Serializable {
-	Route route;
+	RouteName route;
 	Stop fromStop, toStop;
 	Map<String,String> estimatedArrivalTimeList;
 	private static final String separator =":";
 	public BusTrip(String savedTrip){
 		String[] segments = savedTrip.split(separator);
 		String[] routeStr = segments[0].split("-");
-		route = new Route(routeStr[0],routeStr[1]);
+		route = new RouteName(routeStr[0],routeStr[1]);
 		
 		String[] stopStr = segments[1].split("-");
 		fromStop = new Stop(stopStr[0],stopStr[1]);
@@ -23,10 +23,10 @@ public class BusTrip implements Serializable {
 	}
 	public BusTrip(){}
 	
-	public Route getRoute() {
+	public RouteName getRoute() {
 		return route;
 	}
-	public void setRoute(Route route) {
+	public void setRoute(RouteName route) {
 		this.route = route;
 	}
 	public Stop getFromStop() {

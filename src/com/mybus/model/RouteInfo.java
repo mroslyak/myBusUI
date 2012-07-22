@@ -3,7 +3,7 @@ package com.mybus.model;
 import java.util.ArrayList;
 import java.util.List;
 
-public class BusRoute {
+public class RouteInfo {
 	String direction;
 	List<Stop> stopList;
 	
