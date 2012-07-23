@@ -2,6 +2,8 @@ package com.mybus.activity;
 
 import java.util.Map;
 
+import com.mybus.model.BusTrip;
+import com.mybus.model.TrainTrip;
 import com.mybus.model.Trip;
 
 import android.app.Activity;
@@ -31,10 +33,13 @@ public class DetailedRouteActivity extends Activity {
 		
 		
 		TableLayout routeEstimateTable = (TableLayout) findViewById(R.id.routeTableEstimates);
-		populateRouteEstimates(routeEstimateTable,trip.getEstimatedArrivalMap());
+		populateRouteEstimates(routeEstimateTable,trip);
 	}
 	
-	private void populateRouteEstimates(TableLayout table, Map<String,String> estimates){
+	private void populateRouteEstimates(TableLayout table,Trip trip ){
+		
+		Map<String,String> estimates = trip.getEstimatedArrivalMap();
+		
 		int dip = (int) TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP,
 				                (float) 1, getResources().getDisplayMetrics());
 		if (estimates == null){
@@ -45,7 +50,10 @@ public class DetailedRouteActivity extends Activity {
 		TableRow headerRow = new TableRow(this);
 		
 		TextView header1 = new TextView(this);
-		header1.setText("Bus #");
+		if (trip instanceof BusTrip)
+			header1.setText("Bus #");
+		else
+			header1.setText("Train:");
 		
 		TextView header2 = new TextView(this);
 		header2.setText("Arriving in");
@@ -56,6 +64,7 @@ public class DetailedRouteActivity extends Activity {
 		headerRow.addView(header2);
 		table.addView(headerRow, new TableLayout.LayoutParams(
                 LayoutParams.MATCH_PARENT, LayoutParams.WRAP_CONTENT));
+		
 		for (String bus:estimates.keySet()){
 			if(bus.startsWith("next"))
 				continue;
@@ -73,7 +82,7 @@ public class DetailedRouteActivity extends Activity {
 		                busView.setTextSize(15);
 		                timeView.setTextSize(15);
 		                busView.setWidth(250 * dip);
-		                timeView.setWidth(100 * dip);
+		                timeView.setWidth(200 * dip);
 		                busView.setPadding(20*dip, 0, 0, 0);
 
 			row.addView(busView);

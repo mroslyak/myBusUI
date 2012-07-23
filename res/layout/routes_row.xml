@@ -49,7 +49,7 @@
 
 
     <TextView
-        android:id="@+id/nextBus"
+        android:id="@+id/nextRoute"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_below="@id/toConstant"
@@ -65,10 +65,10 @@
         android:id="@+id/nextBusNumber"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_alignBaseline="@+id/nextBus"
-        android:layout_alignBottom="@+id/nextBus"
+        android:layout_alignBaseline="@+id/nextRoute"
+        android:layout_alignBottom="@+id/nextRoute"
         android:layout_margin="2dp"
-        android:layout_toRightOf="@+id/nextBus"
+        android:layout_toRightOf="@+id/nextRoute"
         android:text="60"
         android:textSize="15sp"
         android:textColor="#000000"
@@ -107,9 +107,11 @@
         android:id="@+id/moreDetailLink"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="More..."
+        android:text="Details..."
  		android:layout_alignParentRight="true"
  		android:visibility="invisible"
+ 		android:textColor="#000000"
+        android:textSize="12sp"
  		android:onClick="showDetailedRoute"
  		/>
  	 	       

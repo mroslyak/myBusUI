@@ -4,9 +4,11 @@ import java.util.ArrayList;
 import java.util.List;
 
 import com.mybus.activity.R;
+import com.mybus.model.TrainTrip;
 import com.mybus.model.Trip;
 
 import android.content.Context;
+import android.graphics.Color;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -50,6 +52,11 @@ public class RouteListRowAdapter extends ArrayAdapter<Trip> {
             TextView goingToTV = (TextView) view.findViewById(R.id.toStopId);
             TextView estimateTV = (TextView) view.findViewById(R.id.nextBusEstimate);
             
+            TextView nextRouteTV = (TextView) view.findViewById(R.id.nextRoute);
+            if (trip instanceof TrainTrip)
+            	nextRouteTV.setText("Train:");
+            else
+            	nextRouteTV.setText("Bus #");
 
             startingStopTV.setText( trip.getFromStop().getName() );
             goingToTV.setText(trip.getToStop().getName());
