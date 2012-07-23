@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <string name="app_name">My Bus</string>
+    <string name="app_name">My MBTA</string>
     <string name="app_setup_activity">Route Setup</string>
     <string name="from">From:</string>
  <string name="to">To:</string>

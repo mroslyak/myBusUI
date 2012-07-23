@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+    <item android:id="@+id/bus_or_train"
+          android:title=""
+          android:showAsAction="ifRoom|withText"
+          android:actionLayout="@layout/action_layout"
+          />
+    
+    <item android:id="@+id/setUpDialog"
+        android:title="Setup"
+       
+          android:showAsAction="ifRoom|withText"
+        />
+    
+    <item android:id="@+id/help"
+          android:showAsAction="ifRoom|collapseActionView"
+        
+        android:title="Help"/>
+</menu>

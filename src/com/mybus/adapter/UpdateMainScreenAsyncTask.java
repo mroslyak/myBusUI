@@ -1,10 +1,9 @@
 package com.mybus.adapter;
 
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
+
 
 import android.os.AsyncTask;
+import android.widget.Spinner;
 
 import com.mybus.model.BusTrip;
 import com.mybus.model.TrainTrip;
@@ -21,6 +20,7 @@ public class  UpdateMainScreenAsyncTask extends AsyncTask<String, Void, String>{
 	}
 	@Override
 	protected String doInBackground(String... params) {
+		
 		for (int i = 0; i < routeAdapter.getCount(); i++) {
 			Trip trip = (Trip) routeAdapter.getItem(i);
 			

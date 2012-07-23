@@ -7,13 +7,16 @@ import java.util.TimerTask;
 import java.util.concurrent.ScheduledExecutorService;
 
 import android.app.Activity;
+import android.app.AlertDialog;
 import android.app.ListActivity;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.os.Bundle;
 import android.os.Handler;
+import android.support.v4.app.FragmentTransaction;
 import android.util.Log;
 import android.view.ContextMenu;
 import android.view.ContextMenu.ContextMenuInfo;
@@ -22,10 +25,19 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewParent;
 import android.widget.AdapterView;
+import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.ListView;
+import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
+
+import com.actionbarsherlock.app.ActionBar;
+import com.actionbarsherlock.app.ActionBar.OnNavigationListener;
+import com.actionbarsherlock.app.ActionBar.Tab;
+import com.actionbarsherlock.app.SherlockListActivity;
+import com.actionbarsherlock.view.MenuInflater;
+import com.actionbarsherlock.view.MenuItem.OnMenuItemClickListener;
 
 import com.mybus.adapter.RouteListRowAdapter;
 import com.mybus.adapter.UpdateMainScreenAsyncTask;
@@ -34,7 +46,7 @@ import com.mybus.service.BusPreferenceService;
 import com.mybus.service.PreferenceService;
 import com.mybus.service.TrainPreferenceService;
 
-public class RoutesListActivity extends ListActivity {
+public class RoutesListActivity extends  SherlockListActivity implements ActionBar.TabListener, OnNavigationListener{
 	PreferenceService<Trip> busPreferenceService, trainPreferenceService;
 	
 	ScheduledExecutorService executorService;
@@ -57,7 +69,6 @@ public class RoutesListActivity extends ListActivity {
 		List<Trip> userTrainRoutes = trainPreferenceService.getRoutes();
 		
 		userBusRoutes.addAll(userTrainRoutes);
-		
 		setContentView(R.layout.routes_main);
 
 		routeAdapter = new RouteListRowAdapter(this, userBusRoutes);
@@ -67,6 +78,17 @@ public class RoutesListActivity extends ListActivity {
 		
 		registerForContextMenu(getListView());
 
+		ActionBar ab = getSupportActionBar();
+		Context context = ab.getThemedContext();
+        ArrayAdapter<CharSequence> list = ArrayAdapter.createFromResource(context, R.array.routeTypes, R.layout.sherlock_spinner_item);
+        list.setDropDownViewResource(R.layout.sherlock_spinner_dropdown_item);
+
+        ab.setNavigationMode(ActionBar.NAVIGATION_MODE_LIST);
+        ab.setListNavigationCallbacks(list, this);
+		ab.setCustomView(R.layout.action_layout);
+    //    ab.addTab(ab.newTab().setText("Tab ").setTabListener(this));
+    //    ab.setNavigationMode(ActionBar.NAVIGATION_MODE_TABS);
+        
 	}
 
 	@Override
@@ -82,8 +104,15 @@ public class RoutesListActivity extends ListActivity {
 			refreshScreenTimer
 					.schedule(new RefreshListTimer(this), 1000, 30000);
 		}
+		
+	//	ActionBar bar = getSupportActionBar();
+	//	Spinner spinner = (Spinner) bar.getCustomView().findViewById(R.id.routeType);
+	//	Toast.makeText(getApplicationContext(), spinner+" ", Toast.LENGTH_SHORT).show();
 	}
 
+	public void setup(View v){
+		Toast.makeText(getApplicationContext(), "Clicked ", Toast.LENGTH_SHORT).show();
+	}
 	@Override
 	public void onCreateContextMenu(ContextMenu menu, View v,
 			ContextMenuInfo menuInfo) {
@@ -113,29 +142,71 @@ public class RoutesListActivity extends ListActivity {
 	}
 
 	@Override
-	public boolean onCreateOptionsMenu(Menu menu) {
-		super.onCreateOptionsMenu(menu);
-		menu.add(0, Menu.FIRST, 0, "Bus Route Setup").setShortcut('0', 'b');
-		menu.add(0, Menu.FIRST+1, 0, "MBTA Train Setup").setShortcut('1', 't');
+	public boolean onCreateOptionsMenu(com.actionbarsherlock.view.Menu menu) {
+		// TODO Auto-generated method stub
+		//MenuInflater inflater = getSupportMenuInflater();
+	    //inflater.inflate(R.menu.tabs, menu);
+	       com.actionbarsherlock.view.MenuItem item =  menu.add("Setup");
+	       item.setShowAsAction(MenuItem.SHOW_AS_ACTION_IF_ROOM | MenuItem.SHOW_AS_ACTION_WITH_TEXT);
+	       item.setOnMenuItemClickListener(new SetupClickListener(this));
+	        
+        
 
-		return true;
+        return super.onCreateOptionsMenu(menu); 
+	    
+		
 	}
+	
+	
+	public class SetupClickListener implements com.actionbarsherlock.view.MenuItem.OnMenuItemClickListener {
+		Context context;
+		public SetupClickListener(Context context){
+			this.context = context;
+		}
+		@Override
+		public boolean onMenuItemClick(com.actionbarsherlock.view.MenuItem item) {
+			final CharSequence[] items = {"Bus", "Train"};
 
-	@Override
-	public boolean onOptionsItemSelected(MenuItem item) {
+			AlertDialog.Builder builder = new AlertDialog.Builder(context);
+			builder.setTitle("Pick Type.");
+			builder.setItems(items, new DialogInterface.OnClickListener() {
+			    public void onClick(DialogInterface dialog, int item) {
+			    	if ("Bus".equals(items[item]))
+			    		showBusSetupActivity(null);
+			    	if ("Train".equals(items[item]))
+			    		showTrainSetupActivity(null);
+			    }
+			});
+			AlertDialog alert = builder.create();
+			
+			alert.show();
+			return false;
+		}
+	}
+	
+	//public boolean onCreateOptionsMenu(Menu menu) {
+	//	super.onCreateOptionsMenu(menu);
+	//	menu.add(0, Menu.FIRST, 0, "Bus Route Setup").setShortcut('0', 'b');
+	//	menu.add(0, Menu.FIRST+1, 0, "MBTA Train Setup").setShortcut('1', 't');
+
+	//	return true;
+	//}
+
+//	@Override
+//	public boolean onOptionsItemSelected(MenuItem item) {
 //		if (item.getTitle().equals("Setup")) {
-		if (item.getItemId() == Menu.FIRST){
-			showBusSetupActivity(null);
+//		if (item.getItemId() == Menu.FIRST){
+//			showBusSetupActivity(null);
 
-			return true;
-		}
-		if (item.getItemId() == (Menu.FIRST +1)){
-			Toast.makeText(this, "adding mbta", Toast.LENGTH_LONG).show();
-			showTrainSetupActivity(null);
-		}
+//			return true;
+//		}
+//		if (item.getItemId() == (Menu.FIRST +1)){
+//			Toast.makeText(this, "adding mbta", Toast.LENGTH_LONG).show();
+//			showTrainSetupActivity(null);
+//		}
 
-		return super.onOptionsItemSelected(item);
-	}
+//		return super.onOptionsItemSelected(item);
+//	}
 
 	public void showBusSetupActivity(View view) {
 		startActivityForResult((new Intent(getApplicationContext(),
@@ -223,4 +294,30 @@ public class RoutesListActivity extends ListActivity {
 		startActivity(detailIntent);
 
 	}
+
+	@Override
+	public void onTabSelected(Tab tab, FragmentTransaction ft) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void onTabUnselected(Tab tab, FragmentTransaction ft) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void onTabReselected(Tab tab, FragmentTransaction ft) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public boolean onNavigationItemSelected(int itemPosition, long itemId) {
+		Toast.makeText(this, "test "+ itemId, Toast.LENGTH_SHORT).show();
+		return false;
+	}
+	
+	
 }

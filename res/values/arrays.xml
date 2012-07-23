@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+<string-array name="routeTypes">
+   <item>Bus</item>
+   <item>Train</item>
+   
+</string-array>
+ 
+</resources>
