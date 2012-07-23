@@ -59,7 +59,7 @@ public abstract class PreferenceService<T> {
 		}
 		editor.putInt(getPreferencePrefix() +"_count", routeCount-1);
 
-			
+		editor.commit();	
 	}
 	
 	public void saveRouteStr(String trip){

@@ -13,13 +13,13 @@ public abstract class Trip implements Serializable {
 	
 	public Trip(String savedTrip){
 		String[] segments = savedTrip.split(separator);
-		String[] routeStr = segments[0].split("-");
+		String[] routeStr = segments[0].split("-",-1);
 		route = new RouteName(routeStr[0],routeStr[1]);
 		
-		String[] stopStr = segments[1].split("-");
+		String[] stopStr = segments[1].split("-",-1);
 		fromStop = new Stop(stopStr[0],stopStr[1]);
 		
-		stopStr = segments[2].split("-");
+		stopStr = segments[2].split("-",-1);
 		toStop = new Stop(stopStr[0],stopStr[1]);
 		
 	}

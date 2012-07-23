@@ -81,18 +81,7 @@ public class TrainSetupRouteActivity extends Activity {
 
 		@Override
 		protected List doInBackground(String... notused) {
-			if (actionSelected.equals("linesnot used")){
-				Spinner lineSpinner = (Spinner) findViewById(R.id.train_line);
-				String selectedLine = lineSpinner.getSelectedItem().toString();
-				List<RouteInfo> list = service.getStops(selectedLine);
-				List<String> directionList = new ArrayList<String>();
-				for (RouteInfo infoRoute:list){
-					if (!directionList.contains(infoRoute.getDirection()))
-							directionList.add(infoRoute.getDirection());
-					
-				}
-				return directionList;
-			}else if (actionSelected.equals("lines")) {
+			if (actionSelected.equals("lines")) {
 				Spinner lineSpinner = (Spinner) findViewById(R.id.train_line);
 				RouteName selectedLine = (RouteName) lineSpinner.getSelectedItem();
 				List<RouteInfo> list = service.getStops(selectedLine.getName());

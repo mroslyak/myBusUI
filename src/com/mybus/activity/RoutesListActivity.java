@@ -1,5 +1,6 @@
 package com.mybus.activity;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Timer;
@@ -41,14 +42,15 @@ import com.actionbarsherlock.view.MenuItem.OnMenuItemClickListener;
 
 import com.mybus.adapter.RouteListRowAdapter;
 import com.mybus.adapter.UpdateMainScreenAsyncTask;
+import com.mybus.model.BusTrip;
 import com.mybus.model.Trip;
 import com.mybus.service.BusPreferenceService;
 import com.mybus.service.PreferenceService;
 import com.mybus.service.TrainPreferenceService;
 
-public class RoutesListActivity extends  SherlockListActivity implements ActionBar.TabListener, OnNavigationListener{
+public class RoutesListActivity extends SherlockListActivity implements ActionBar.TabListener, OnNavigationListener {
 	PreferenceService<Trip> busPreferenceService, trainPreferenceService;
-	
+	int lastestRouteTypeIndex;
 	ScheduledExecutorService executorService;
 	// used for context menu to know which item in the listview was clicked.
 	int clickedRoutePosition;
@@ -64,31 +66,30 @@ public class RoutesListActivity extends  SherlockListActivity implements ActionB
 
 		busPreferenceService = new BusPreferenceService(this);
 		trainPreferenceService = new TrainPreferenceService(this);
+
+		List<Trip> userBusRoutes = new ArrayList<Trip>();//busPreferenceService.getRoutes();
+	//	List<Trip> userTrainRoutes = trainPreferenceService.getRoutes();
 		
-		List<Trip> userBusRoutes = busPreferenceService.getRoutes();
-		List<Trip> userTrainRoutes = trainPreferenceService.getRoutes();
-		
-		userBusRoutes.addAll(userTrainRoutes);
+//		userBusRoutes.addAll(userTrainRoutes);
 		setContentView(R.layout.routes_main);
 
-		routeAdapter = new RouteListRowAdapter(this, userBusRoutes);
+		routeAdapter = new RouteListRowAdapter(this,  userBusRoutes);
 		setListAdapter(routeAdapter);
 
 		getListView().setLongClickable(true);
-		
+
 		registerForContextMenu(getListView());
 
 		ActionBar ab = getSupportActionBar();
 		Context context = ab.getThemedContext();
-        ArrayAdapter<CharSequence> list = ArrayAdapter.createFromResource(context, R.array.routeTypes, R.layout.sherlock_spinner_item);
-        list.setDropDownViewResource(R.layout.sherlock_spinner_dropdown_item);
 
-        ab.setNavigationMode(ActionBar.NAVIGATION_MODE_LIST);
-        ab.setListNavigationCallbacks(list, this);
+		ArrayAdapter<CharSequence> list = ArrayAdapter.createFromResource(context, R.array.routeTypes, R.layout.sherlock_spinner_item);
+		list.setDropDownViewResource(R.layout.sherlock_spinner_dropdown_item);
+
+		ab.setNavigationMode(ActionBar.NAVIGATION_MODE_LIST);
+		ab.setListNavigationCallbacks(list, this);
 		ab.setCustomView(R.layout.action_layout);
-    //    ab.addTab(ab.newTab().setText("Tab ").setTabListener(this));
-    //    ab.setNavigationMode(ActionBar.NAVIGATION_MODE_TABS);
-        
+
 	}
 
 	@Override
@@ -96,26 +97,22 @@ public class RoutesListActivity extends  SherlockListActivity implements ActionB
 		super.onResume();
 		if (haveNetworkConnection() == false) {
 			Toast.makeText(this, "No Network Connection", Toast.LENGTH_LONG).show();
-			for (int i=0;i< routeAdapter.getCount();i++){
+			for (int i = 0; i < routeAdapter.getCount(); i++) {
 				routeAdapter.getItem(i).setEstimatedArrival(new HashMap<String, String>());
 			}
 		} else {
 			refreshScreenTimer = new Timer();
-			refreshScreenTimer
-					.schedule(new RefreshListTimer(this), 1000, 30000);
+			refreshScreenTimer.schedule(new RefreshListTimer(this), 1000, 30000);
 		}
-		
-	//	ActionBar bar = getSupportActionBar();
-	//	Spinner spinner = (Spinner) bar.getCustomView().findViewById(R.id.routeType);
-	//	Toast.makeText(getApplicationContext(), spinner+" ", Toast.LENGTH_SHORT).show();
+
 	}
 
-	public void setup(View v){
+	public void setup(View v) {
 		Toast.makeText(getApplicationContext(), "Clicked ", Toast.LENGTH_SHORT).show();
 	}
+
 	@Override
-	public void onCreateContextMenu(ContextMenu menu, View v,
-			ContextMenuInfo menuInfo) {
+	public void onCreateContextMenu(ContextMenu menu, View v, ContextMenuInfo menuInfo) {
 		super.onCreateContextMenu(menu, v, menuInfo);
 
 		AdapterView.AdapterContextMenuInfo info = (AdapterView.AdapterContextMenuInfo) menuInfo;
@@ -128,12 +125,15 @@ public class RoutesListActivity extends  SherlockListActivity implements ActionB
 	@Override
 	public boolean onContextItemSelected(MenuItem item) {
 		if (item.getTitle() == "Remove") {
-			busPreferenceService.deleteRoute(clickedRoutePosition);
-
 			Trip trip = routeAdapter.getItem(clickedRoutePosition);
+			if (trip instanceof BusTrip)
+				busPreferenceService.deleteRoute(clickedRoutePosition);
+			else
+				trainPreferenceService.deleteRoute(clickedRoutePosition);
+
 			routeAdapter.remove(trip);
 			routeAdapter.notifyDataSetChanged();
-			Toast.makeText(this, "Removed", 2000).show();
+			Toast.makeText(this, "Removed", Toast.LENGTH_SHORT).show();
 
 		} else {
 			return false;
@@ -144,96 +144,67 @@ public class RoutesListActivity extends  SherlockListActivity implements ActionB
 	@Override
 	public boolean onCreateOptionsMenu(com.actionbarsherlock.view.Menu menu) {
 		// TODO Auto-generated method stub
-		//MenuInflater inflater = getSupportMenuInflater();
-	    //inflater.inflate(R.menu.tabs, menu);
-	       com.actionbarsherlock.view.MenuItem item =  menu.add("Setup");
-	       item.setShowAsAction(MenuItem.SHOW_AS_ACTION_IF_ROOM | MenuItem.SHOW_AS_ACTION_WITH_TEXT);
-	       item.setOnMenuItemClickListener(new SetupClickListener(this));
-	        
-        
+		// MenuInflater inflater = getSupportMenuInflater();
+		// inflater.inflate(R.menu.tabs, menu);
+		com.actionbarsherlock.view.MenuItem item = menu.add("Setup");
+		item.setShowAsAction(MenuItem.SHOW_AS_ACTION_IF_ROOM | MenuItem.SHOW_AS_ACTION_WITH_TEXT);
+		item.setOnMenuItemClickListener(new SetupClickListener(this));
 
-        return super.onCreateOptionsMenu(menu); 
-	    
-		
+		return super.onCreateOptionsMenu(menu);
+
 	}
-	
-	
+
+	/**
+	 * Dialog for choosing the right setup screen
+	 * 
+	 * @author mroslyakov
+	 * 
+	 */
 	public class SetupClickListener implements com.actionbarsherlock.view.MenuItem.OnMenuItemClickListener {
 		Context context;
-		public SetupClickListener(Context context){
+
+		public SetupClickListener(Context context) {
 			this.context = context;
 		}
+
 		@Override
 		public boolean onMenuItemClick(com.actionbarsherlock.view.MenuItem item) {
-			final CharSequence[] items = {"Bus", "Train"};
+			final CharSequence[] items = { "Bus", "Train" };
 
 			AlertDialog.Builder builder = new AlertDialog.Builder(context);
 			builder.setTitle("Pick Type.");
 			builder.setItems(items, new DialogInterface.OnClickListener() {
-			    public void onClick(DialogInterface dialog, int item) {
-			    	if ("Bus".equals(items[item]))
-			    		showBusSetupActivity(null);
-			    	if ("Train".equals(items[item]))
-			    		showTrainSetupActivity(null);
-			    }
+				public void onClick(DialogInterface dialog, int item) {
+					if ("Bus".equals(items[item]))
+						showBusSetupActivity(null);
+					if ("Train".equals(items[item]))
+						showTrainSetupActivity(null);
+				}
 			});
 			AlertDialog alert = builder.create();
-			
 			alert.show();
 			return false;
 		}
 	}
-	
-	//public boolean onCreateOptionsMenu(Menu menu) {
-	//	super.onCreateOptionsMenu(menu);
-	//	menu.add(0, Menu.FIRST, 0, "Bus Route Setup").setShortcut('0', 'b');
-	//	menu.add(0, Menu.FIRST+1, 0, "MBTA Train Setup").setShortcut('1', 't');
-
-	//	return true;
-	//}
-
-//	@Override
-//	public boolean onOptionsItemSelected(MenuItem item) {
-//		if (item.getTitle().equals("Setup")) {
-//		if (item.getItemId() == Menu.FIRST){
-//			showBusSetupActivity(null);
-
-//			return true;
-//		}
-//		if (item.getItemId() == (Menu.FIRST +1)){
-//			Toast.makeText(this, "adding mbta", Toast.LENGTH_LONG).show();
-//			showTrainSetupActivity(null);
-//		}
-
-//		return super.onOptionsItemSelected(item);
-//	}
 
 	public void showBusSetupActivity(View view) {
-		startActivityForResult((new Intent(getApplicationContext(),
-				BusSetupRouteActivity.class)), 1);
+		startActivityForResult((new Intent(getApplicationContext(), BusSetupRouteActivity.class)), 1);
 
 	}
-	
-	public void showTrainSetupActivity(View view){
-		startActivityForResult(new Intent(getApplicationContext(),TrainSetupRouteActivity.class), 2);
+
+	public void showTrainSetupActivity(View view) {
+		startActivityForResult(new Intent(getApplicationContext(), TrainSetupRouteActivity.class), 2);
 	}
 
 	@Override
 	protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-		Log.d("CheckStartActivity", "onActivityResult and resultCode = "
-				+ resultCode);
-
 		super.onActivityResult(requestCode, resultCode, data);
-		if (resultCode == 1) {
-			if (busPreferenceService.getRoutesCount() > routeAdapter.getCount()) {
-				List<Trip> updatedTrips = busPreferenceService.getRoutes();
-				routeAdapter.add(updatedTrips.get(updatedTrips.size() - 1));
-				routeAdapter.notifyDataSetChanged();
-				Toast.makeText(this, "Added", 2000).show();
+		if (resultCode > 0) {
+			reloadRouteList(lastestRouteTypeIndex);
+			Toast.makeText(this, "Added", 2000).show();
 
-			}
-		} 
-	
+		}
+
 	}
 
 	private class RefreshListTimer extends TimerTask {
@@ -261,9 +232,9 @@ public class RoutesListActivity extends  SherlockListActivity implements ActionB
 
 	}
 
-	
 	/**
 	 * Check if there is network connection
+	 * 
 	 * @return
 	 */
 	private boolean haveNetworkConnection() {
@@ -282,12 +253,11 @@ public class RoutesListActivity extends  SherlockListActivity implements ActionB
 		}
 		return haveConnectedWifi || haveConnectedMobile;
 	}
-	
-	
-	public void showDetailedRoute(View view){
-		Trip trip = routeAdapter.getItem(( Integer)view.getTag());
-		
-		Intent detailIntent = new Intent(getApplicationContext(),DetailedRouteActivity.class);
+
+	public void showDetailedRoute(View view) {
+		Trip trip = routeAdapter.getItem((Integer) view.getTag());
+
+		Intent detailIntent = new Intent(getApplicationContext(), DetailedRouteActivity.class);
 		Bundle bundle = new Bundle();
 		bundle.putSerializable("selectedRoute", trip);
 		detailIntent.putExtras(bundle);
@@ -298,26 +268,46 @@ public class RoutesListActivity extends  SherlockListActivity implements ActionB
 	@Override
 	public void onTabSelected(Tab tab, FragmentTransaction ft) {
 		// TODO Auto-generated method stub
-		
+
 	}
 
 	@Override
 	public void onTabUnselected(Tab tab, FragmentTransaction ft) {
 		// TODO Auto-generated method stub
-		
+
 	}
 
 	@Override
 	public void onTabReselected(Tab tab, FragmentTransaction ft) {
 		// TODO Auto-generated method stub
-		
+
 	}
 
 	@Override
 	public boolean onNavigationItemSelected(int itemPosition, long itemId) {
-		Toast.makeText(this, "test "+ itemId, Toast.LENGTH_SHORT).show();
-		return false;
+		lastestRouteTypeIndex =itemPosition;
+		reloadRouteList(itemPosition);
+		
+		return true;
 	}
-	
-	
+
+	private void reloadRouteList(int position) {
+		List<Trip> updatedTrips = null;
+
+		ActionBar bar = getSupportActionBar();
+		Spinner spinner = (Spinner) bar.getCustomView().findViewById(R.id.routeType);
+		String routeType = (String) spinner.getAdapter().getItem(position);
+		if (routeType.equals("Bus")) {
+			updatedTrips = busPreferenceService.getRoutes();
+		} else {
+			updatedTrips = trainPreferenceService.getRoutes();
+		}
+
+		routeAdapter.clear();
+		routeAdapter.addAll(updatedTrips);
+		routeAdapter.notifyDataSetChanged();
+		refreshScreenTimer.cancel();
+		refreshScreenTimer = new Timer();
+		refreshScreenTimer.schedule(new RefreshListTimer(this), 1000, 30000);
+	}
 }

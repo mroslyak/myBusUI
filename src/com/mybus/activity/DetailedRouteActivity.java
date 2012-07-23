@@ -37,7 +37,10 @@ public class DetailedRouteActivity extends Activity {
 	private void populateRouteEstimates(TableLayout table, Map<String,String> estimates){
 		int dip = (int) TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP,
 				                (float) 1, getResources().getDisplayMetrics());
-				 
+		if (estimates == null){
+			finish();
+			return;
+		}
 
 		TableRow headerRow = new TableRow(this);
 		

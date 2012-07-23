@@ -36,17 +36,6 @@ public class BusPreferenceService extends PreferenceService<Trip> {
 	}
 	
 	
-	public void deleteRoute(int index){
-		List<Trip> tripList = getRoutes();
-		tripList.remove(index);
-		preferences.edit().clear().apply();
-		
-		for (Trip trip:tripList){
-			saveRoute(trip);
-		}
-			
-	}
-	
 	public void saveRoute(Trip trip){
 		saveRouteStr(trip.toString());
 	}
